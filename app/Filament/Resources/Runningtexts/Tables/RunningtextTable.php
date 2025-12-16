@@ -1,35 +1,25 @@
 <?php
 
-namespace App\Filament\Resources\Notes\Tables;
+namespace App\Filament\Resources\Runningtexts\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class NotesTable
+class RunningtextTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
                 
-                TextColumn::make('judul_note')
+                TextColumn::make('isitext')
                     ->searchable()
-                    ->sortable()
-                    ->label('Judul Catatan'),
-                
-                TextColumn::make('isi')
-                    ->limit(50) 
-                    ->label('Isi Ringkas')
-                    // >>> SOLUSI: TAMBAHKAN .html() DI SINI <<<
-                    ->html(), 
-                
-                IconColumn::make('lokasi') 
-                    ->boolean()
-                    ->label('Lokasi Aktif'),
+                    ->wrap() // Agar teks panjang dibungkus ke bawah
+                    ->limit(100) // Batasi tampilan di list menjadi 100 karakter
+                    ->label('Isi Teks Berjalan'),
 
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -43,7 +33,7 @@ class NotesTable
             ->recordActions([
                 EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
