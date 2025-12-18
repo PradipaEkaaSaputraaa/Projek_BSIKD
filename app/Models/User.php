@@ -41,12 +41,12 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(\Filament\Panel $panel): bool
 {
-    // Jika user mencoba masuk ke URL /admin
+    // Jika mencoba masuk ke panel Admin
     if ($panel->getId() === 'admin') {
         return $this->role === 'admin';
     }
 
-    // Jika user mencoba masuk ke URL /app (Panel User)
+    // Jika mencoba masuk ke panel User (Pastikan ID-nya 'user')
     if ($panel->getId() === 'user') {
         return $this->role === 'user';
     }
