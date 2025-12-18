@@ -24,6 +24,15 @@ class AgendaResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Daftar Agenda';
 
+    // Tambahkan ini agar Resource ini muncul di kedua panel
+protected static ?string $panel = 'user'; 
+
+// ATAU jika ingin muncul di semua panel:
+public static function getPanels(): array
+{
+    return ['admin', 'user'];
+}
+
     public static function form(Schema $schema): Schema
     {
         return AgendaForm::configure($schema);
