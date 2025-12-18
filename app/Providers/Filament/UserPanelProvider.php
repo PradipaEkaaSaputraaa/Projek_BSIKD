@@ -24,9 +24,11 @@ class UserPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
 {
     return $panel
-        ->id('user') // <--- ID INI HARUS SAMA DENGAN YANG DI MODEL USER.PHP
-        ->path('app') // Ini yang membuat URL-nya jadi /app
-        ->login()    // WAJIB ADA agar user bisa login
+        ->id('user')
+        ->path('app')
+        // ->login() // HAPUS INI agar tidak ada form login terpisah di /app/login
+        ->homeUrl('/check-role') // Arahkan ke rute pengecek role
+        ->authGuard('web')
         ->colors([
             'primary' => \Filament\Support\Colors\Color::Blue, // Warna biru buat user beda dengan admin
         ])
