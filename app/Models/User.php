@@ -7,7 +7,6 @@ use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -25,32 +24,41 @@ class User extends Authenticatable implements FilamentUser
         'remember_token',
     ];
 
-    /**
-     * Pastikan password di-handle dengan benar oleh Laravel 11
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', // Ini sangat penting!
+            'password' => 'hashed', 
         ];
     }
 
     /**
      * Izin akses masuk ke sistem login Filament
      */
-    public function canAccessPanel(\Filament\Panel $panel): bool
+  public function canAccessPanel(\Filament\Panel $panel): bool
 {
-    // Jika mencoba masuk ke panel Admin
-    if ($panel->getId() === 'admin') {
-        return $this->role === 'admin';
+    if ($panel->getId() === 'dashboard') {
+        // Hanya admin yang bisa melihat ISI panel dashboard
+        // Tapi biarkan user login di sini (ini sudah kita atur di redirect)
+        return true; 
     }
 
-    // Jika mencoba masuk ke panel User (Pastikan ID-nya 'user')
     if ($panel->getId() === 'user') {
         return $this->role === 'user';
     }
 
     return false;
 }
+
+    /**
+     * Helper untuk menentukan arah redirect setelah login di /login
+     */
+    public function getRedirectRoute(): string
+    {
+        return match ($this->role) {
+            'admin' => '/dashboard', // Sesuaikan dengan path di route:list kamu
+            'user'  => '/app',
+            default => '/login',
+        };
+    }
 }

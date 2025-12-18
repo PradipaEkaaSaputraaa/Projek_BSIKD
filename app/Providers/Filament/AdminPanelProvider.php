@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Auth;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -25,10 +26,11 @@ class AdminPanelProvider extends PanelProvider
 {
     return $panel
         ->default()
-        ->id('admin')
-        ->path('admin')
-        ->login()
-        ->authGuard('web') // Memunculkan halaman login
+        ->id('dashboard')
+        ->path('dashboard')
+        ->login() 
+        ->authGuard('web')
+        ->homeUrl(fn () => auth()->user()?->role === 'admin' ? '/dashboard' : '/app')
             ->colors([
                 'primary' => Color::Amber,
             ])
