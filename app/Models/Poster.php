@@ -14,5 +14,6 @@ class Poster extends Model
     protected $fillable = [
         'judul_poster',
         'path_poster', // Wajib diisi agar Filament bisa menyimpannya
+        'is_active',
     ];
 }

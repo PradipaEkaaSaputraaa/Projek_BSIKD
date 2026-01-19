@@ -44,3 +44,5 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect('/');
 })->name('logout');
+
+set_time_limit(300);

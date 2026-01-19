@@ -3,198 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Signage BSIKD</title>
+    <title>Digital Signage BSIKD - Top Aligned Poster</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;900&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animasi Marquee */
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .marquee-container {
-            display: flex;
-            width: max-content;
-            animation: marquee 40s linear infinite;
-        }
-
-        .marquee-content {
-            display: flex;
-            white-space: nowrap;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body {
-            background-color: #000;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        body, html {
+            background: #000;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            cursor: none;
-            /* Font default untuk konten lainnya */
-            font-family: ui-sans-serif, system-ui, sans-serif;
+            font-family: 'Source Sans 3', sans-serif;
         }
 
         .portrait-container {
-            width: 56.25vh; 
-            height: 100vh;
-            background: #000;
+            width: 100%;
+            height: 100%;
+            position: relative;
             display: flex;
             flex-direction: column;
-            position: relative;
+        }
+
+        /* 1. SLIDESHOW LAYER */
+        .slides-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 7vh; /* Berhenti sebelum running text */
+            z-index: 1;
         }
 
         .slide {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            /* REVISI: Mepet ke atas */
+            align-items: flex-start; 
+        }
+
+        .slide.active { opacity: 1; }
+
+        .slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Latar belakang slide utama tetap cover */
+        #slide-info { align-items: center; }
+        #slide-info img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+        }
+
+        /* 2. UI LAYER (AGENDA & NOTES) */
+        .main-ui-layer {
+            position: relative;
             z-index: 10;
+            height: 93vh;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out;
         }
 
-        .slide.active {
-            opacity: 1;
+        .content-padding { padding-left: 3rem; padding-right: 3rem; }
+
+        /* Agenda & Notes Container */
+        .top-content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agenda-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-card {
+            background: linear-gradient(to bottom right, #1e3a8a, #1e40af);
+            border-left: 8px solid #3b82f6;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+        }
+
+        .notes-gate-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            margin-top: 2rem;
+            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        }
+
+        /* 3. JAM PERMANEN (DI AREA HITAM BAWAH) */
+        .permanent-clock-area {
+            position: absolute;
+            bottom: 9vh; /* Di atas running text */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             z-index: 20;
+            pointer-events: none;
         }
 
-        .glass-clock {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem 2.5rem 1rem 1.5rem;
-            border-radius: 0 1.5rem 0 0;
+        #clock {
+            font-size: 5rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
-        .modern-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .date-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fbbf24;
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
 
-        .modern-footer {
-            background: #ffffff;
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6);
+        /* 4. FOOTER */
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 7vh;
+            background: white;
+            border-top: 6px solid #fbbf24;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
         }
 
-        /* GAYA FONT SOURCE SANS PRO UNTUK RUNNING TEXT */
-        .running-text-style {
-            font-family: 'Source Sans 3', sans-serif; /* Nama terbaru dari Source Sans Pro di Google Fonts */
-            letter-spacing: 0.5px;
-            text-transform: none; /* Atur 'uppercase' jika ingin huruf kapital semua */
+        .marquee-content {
+            display: flex;
+            width: max-content;
+            animation: marquee 50s linear infinite;
         }
 
-        .pulse-dot {
-            animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.5; }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
     </style>
 </head>
 <body>
 
     <div class="portrait-container">
-        <main class="flex-grow w-full h-full relative overflow-hidden">
-            
-            <div class="slide active bg-slate-900">
-                <div class="absolute top-0 left-0 w-full h-[60%] overflow-hidden">
-                    <img src="{{ asset('images/foto_kampus.jpg') }}" class="w-full h-full object-cover" alt="Kampus BSIKD">
-                    <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#0f172a]"></div>
-                </div>
-
-                <div class="relative z-10 p-8 pt-16 flex flex-col gap-6">
-                    <div class="text-center mb-2">
-                        <h2 class="text-4xl font-black text-white tracking-tighter uppercase drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
-                            Informasi Kampus
-                        </h2>
-                        <div class="flex justify-center mt-2">
-                            <div class="h-1.5 w-20 bg-yellow-500 rounded-full shadow-lg shadow-yellow-500/50"></div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        @forelse($agendas as $agenda)
-                        <div class="modern-card p-4 rounded-2xl shadow-2xl">
-                            <h3 class="text-white font-bold text-base mb-2 leading-snug drop-shadow-md">
-                                {{ $agenda->isi_agenda }}
-                            </h3>
-                            <div class="flex gap-4 text-[11px] font-mono font-bold uppercase tracking-widest text-blue-400">
-                                <span>📅 {{ $agenda->tgl }}</span>
-                                <span>⏰ {{ $agenda->jam }}</span>
-                            </div>
-                        </div>
-                        @empty
-                        @endforelse
-                    </div>
-
-                    <div class="space-y-4">
-                        @forelse($notes as $note)
-                        <div class="modern-card p-5 rounded-2xl border-l-4 border-yellow-500 shadow-2xl">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="px-2 py-0.5 bg-yellow-500 rounded text-black font-black text-[10px]">PENGUMUMAN</span>
-                                <h4 class="text-yellow-400 font-black text-xs uppercase tracking-widest">{{ $note->judul_note }}</h4>
-                            </div>
-                            <div class="text-white text-[14px] italic leading-relaxed font-medium drop-shadow-md">
-                                {!! $note->isi !!}
-                            </div>
-                        </div>
-                        @empty
-                        @endforelse
-                    </div>
-                </div>
+        
+        <div class="slides-wrapper">
+            <div class="slide active" id="slide-info">
+                <img src="{{ asset('images/foto_kampus.jpg') }}">
+                <div class="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/60 to-slate-950"></div>
             </div>
-
             @foreach($posters as $p)
                 <div class="slide">
-                    @if($p->path_poster)
-                        <img src="{{ asset('storage/' . $p->path_poster) }}" class="w-full h-full object-cover">
-                    @endif
+                    <img src="{{ asset('storage/' . $p->path_poster) }}">
                 </div>
             @endforeach
-        </main>
+        </div>
 
-        <div class="absolute bottom-[5vh] left-0 z-50">
-            <div class="glass-clock shadow-2xl">
-                <h2 id="clock" class="text-4xl font-mono font-bold text-white leading-none tracking-tighter">00:00:00</h2>
-                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-yellow-400 mt-1">
-                    {{ now()->translatedFormat('d F Y') }}
-                </p>
+        <div class="main-ui-layer" id="ui-container">
+            <div class="top-content-area content-padding">
+                <div class="pt-12 text-center">
+                    <h2 class="text-3xl font-black text-white uppercase tracking-widest">Informasi Kampus</h2>
+                    <div class="h-1 w-20 bg-yellow-500 mx-auto mt-2 rounded-full"></div>
+                </div>
+
+                <div class="agenda-grid">
+                    @foreach($agendas as $agenda)
+                        <div class="info-card">
+                            <h3 class="text-white font-bold text-xl leading-tight">{{ $agenda->isi_agenda }}</h3>
+                            <p class="text-blue-300 text-xs mt-1">📅 {{ $agenda->tgl }} | ⏰ {{ $agenda->jam }}</p>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="notes-gate-container">
+                    <div class="notes-scroll-content">
+                        @foreach($notes as $note)
+                            <div class="bg-yellow-400 rounded-2xl p-6 mb-6 text-black">
+                                <h4 class="font-black text-2xl uppercase mb-1">{{ $note->judul_note }}</h4>
+                                <div class="text-xl">{!! $note->isi !!}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
 
-        <footer class="h-[5vh] w-full modern-footer flex items-center overflow-hidden z-50">
-            <div class="marquee-container">
-                <div class="marquee-content">
-                    @foreach($runningTexts as $rt)
-                        <span class="running-text-style text-base font-bold text-slate-900 flex items-center mx-10">
-                            <span class="mr-3 w-3 h-3 bg-red-600 rounded-full pulse-dot"></span> 
-                            {{ $rt->isitext }}
-                        </span>
-                    @endforeach
-                </div>
-                <div class="marquee-content">
-                    @foreach($runningTexts as $rt)
-                        <span class="running-text-style text-base font-bold text-slate-900 flex items-center mx-10">
-                            <span class="mr-3 w-3 h-3 bg-red-600 rounded-full pulse-dot"></span> 
-                            {{ $rt->isitext }}
-                        </span>
-                    @endforeach
-                </div>
+        <div class="permanent-clock-area">
+            <h2 id="clock">00:00:00</h2>
+            <p class="date-text uppercase">{{ now()->translatedFormat('d F Y') }}</p>
+        </div>
+
+        <footer>
+            <div class="marquee-content">
+                @foreach($runningTexts as $rt)
+                    <span class="text-2xl font-black text-slate-900 mx-14 uppercase flex items-center whitespace-nowrap">
+                        <div class="mr-4 w-5 h-5 bg-red-600 rounded-full animate-pulse"></div> {{ $rt->isitext }}
+                    </span>
+                @endforeach
             </div>
         </footer>
+
     </div>
 
     <script>
@@ -210,21 +239,29 @@
 
         let slideIndex = 0;
         const slides = document.querySelectorAll(".slide");
+        const uiContainer = document.getElementById("ui-container");
 
         function showSlides() {
             if (slides.length <= 1) return;
-            slides.forEach(s => { s.classList.remove("active"); s.style.opacity = "0"; });
-            slideIndex++;
-            if (slideIndex > slides.length) slideIndex = 1;
-            const currentSlide = slides[slideIndex - 1];
-            currentSlide.classList.add("active");
-            currentSlide.style.opacity = "1";
-            let duration = (slideIndex === 1) ? 15000 : 3000;
+            
+            slides.forEach(s => s.classList.remove("active"));
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add("active");
+            
+            // UI Agenda/Notes hanya muncul di slide info, tapi Jam tetap ada di bawah
+            if (slides[slideIndex].id === 'slide-info') {
+                uiContainer.style.opacity = "1";
+            } else {
+                uiContainer.style.opacity = "0";
+            }
+
+            let duration = slides[slideIndex].id === 'slide-info' ? 60000 : 15000;
             setTimeout(showSlides, duration);
         }
 
-        window.onload = () => { if (slides.length > 1) setTimeout(showSlides, 15000); };
-        setTimeout(() => { window.location.reload(); }, 600000);
+        if (slides.length > 1) {
+            setTimeout(showSlides, 60000);
+        }
     </script>
 </body>
 </html>

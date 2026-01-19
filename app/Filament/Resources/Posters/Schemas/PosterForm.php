@@ -3,9 +3,10 @@
 // Pastikan namespace adalah PLURAL
 namespace App\Filament\Resources\Posters\Schemas; 
 
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 
 class PosterForm
 {
@@ -27,6 +28,12 @@ class PosterForm
                     ->disk('public') // Menyimpan ke public disk (pastikan sudah 'php artisan storage:link')
                     ->columnSpanFull() 
                     ->label('File Gambar Poster'),
+
+                Toggle::make('is_active')
+                ->label('Tampilkan di TV?')
+                ->default(true)
+                ->onColor('success')
+                ->columnSpanFull(),
             ]);
     }
 }
