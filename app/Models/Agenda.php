@@ -11,6 +11,6 @@ class Agenda extends Model
         'tgl',
         'jam',
         'isi_agenda',
-        // Tambahkan semua kolom yang boleh diisi dari request/form
+        'is_active',
     ];
 }

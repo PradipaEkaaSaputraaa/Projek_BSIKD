@@ -2,14 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\DisplayController; // Pastikan Controller ini diimport
+use App\Http\Controllers\DisplayController;
 
-// 1. Halaman Utama
-Route::get('/', function () {
-    return redirect('/check-role');
-});
+// 1. HALAMAN UTAMA (Langsung Display)
+// Sekarang masyarakat cukup buka alamat IP atau localhost:8000 langsung muncul poster
+Route::get('/', [DisplayController::class, 'index'])->name('user.display');
 
-// 2. Pintu masuk tunggal
+// 2. URL SPESIFIK DISPLAY (Tanpa Login)
+// Masyarakat bisa akses ini langsung tanpa diminta password
+Route::get('/display-portal', [DisplayController::class, 'index']);
+
+// 3. AKSES ADMIN (Pintu Masuk Login)
+// Ketik: localhost:8000/login untuk masuk ke panel admin
 Route::get('/login', function () {
     if (Auth::check()) {
         return redirect('/check-role');
@@ -17,7 +21,8 @@ Route::get('/login', function () {
     return redirect('/dashboard/login');
 })->name('login');
 
-// 3. Polisi Lalu Lintas (Pemisah Role)
+// 4. POLISI LALU LINTAS (Pemisah Role)
+// Digunakan setelah Admin berhasil login
 Route::get('/check-role', function () {
     if (!Auth::check()) {
         return redirect('/login');
@@ -25,26 +30,19 @@ Route::get('/check-role', function () {
 
     $user = Auth::user();
 
-    // Admin masuk ke Panel Filament
+    // Jika admin, masuk ke Dashboard Filament
     if ($user->role === 'admin') {
         return redirect('/dashboard'); 
     } 
 
-    // User biasa langsung diarahkan ke halaman DISPLAY PORTRAIT
-    if ($user->role === 'user') {
-        return redirect('/display-portal'); 
-    }
-
-    Auth::logout();
-    return redirect('/login')->with('error', 'Role tidak dikenali.');
+    // Jika user biasa login, arahkan ke display (meskipun sekarang sudah bisa diakses tanpa login)
+    return redirect('/display-portal'); 
 })->middleware(['auth']);
 
-// 4. Rute Halaman Display (Portrait)
-// Ini adalah URL tujuan untuk User biasa
-Route::get('/display-portal', [DisplayController::class, 'index'])->middleware(['auth'])->name('user.display');
-
-// Rute Logout agar kembali ke halaman login awal
+// 5. LOGOUT
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login');
+    return redirect('/');
 })->name('logout');
+
+set_time_limit(300);

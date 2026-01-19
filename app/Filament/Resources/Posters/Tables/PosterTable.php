@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\Posters\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Table;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Tables\Columns\ToggleColumn;
 
 class PosterTable
 {
@@ -27,6 +28,9 @@ class PosterTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                ToggleColumn::make('is_active')
+                ->label('Status Aktif'),
             ])
             ->filters([
                 //
